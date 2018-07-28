@@ -1,18 +1,16 @@
 FROM davimss/centos-base
 
-USER root
+ENV JAVA_MAJOR_VERSION 8
+ENV JAVA_UPDATE 181
 
-ENV JDK_FILE jdk-8u172-linux-x64.tar.gz
+ENV JDK_FILE jdk-${JAVA_MAJOR_VERSION}u${JAVA_UPDATE}-linux-x64.tar.gz
+ENV JDK_DIR jdk1.${JAVA_MAJOR_VERSION}.0_${JAVA_UPDATE}
+ENV JDK_BASE_DOWNLOAD_URL https://www.dropbox.com/s/mzgi0houfpaaarh
+ENV JDK_DOWNLOAD_URL ${JDK_BASE_DOWNLOAD_URL}/${JDK_FILE}?dl=1
+ENV JAVA_HOME /opt/jdk
 
 RUN set -x \
-    && curl -o $JDK_FILE -L https://www.dropbox.com/s/wtfluk6ppp2ri7z/jdk-8u172-linux-x64.tar.gz?dl=1 \
+    && curl -o $JDK_FILE -L ${JDK_DOWNLOAD_URL} \
     && tar -xvf $JDK_FILE \
     && rm $JDK_FILE \
-    && chmod -Rf 755 /opt \
-    && chown caos:caos -Rf /opt
-
-USER caos
-
-ENV JAVA_HOME /opt/jdk1.8.0_172
-
-CMD /bin/bash
+    && ln -s /opt/${JDK_DIR} ${JAVA_HOME}
